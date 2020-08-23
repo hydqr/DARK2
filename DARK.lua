@@ -5,7 +5,7 @@ json = dofile("./DaRk_lib/JSON.lua")
 URL = dofile("./DaRk_lib/url.lua")
 serpent = dofile("./DaRk_lib/serpent.lua")
 database = dofile("./DaRk_lib/redis.lua").connect("127.0.0.1", 6379)
-DaRk_server = io.popen("echo $SSH_CLIENT | awk '{ print $1}'"):read('*a')
+id_server = io.popen("echo $SSH_CLIENT | awk '{ print $1}'"):read('*a')
 --------------------------------------------------------------------------------------------------------------
 local AutoSet = function() 
 local create = function(data, file, uglify)  
@@ -19,7 +19,7 @@ end
 file:write(serialized)    
 file:close()  
 end  
-if not database:get(DaRk_server..":token") then
+if not database:get(id_server..":token") then
 io.write('\27[0;31m\n ارسل توكن البوت الان↓ :\na┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉\n\27')
 local token = io.read()
 if token ~= '' then
@@ -28,30 +28,30 @@ if res ~= 200 then
 print('\27[0;31m┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉\n التوكن غير صحيح تاكد منه ثم ارسله')
 else
 io.write('\27[0;31m تم حفظ التوكن بنجاح \na┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉\n27[0;39;49m')
-database:set(DaRk_server..":token",token)
+database:set(id_server..":token",token)
 end 
 else
 print('\27[0;35m┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉\n لم يتم حفظ التوكن ارسل لي التوكن الان')
 end 
 os.execute('lua DARK.lua')
 end
-if not database:get(DaRk_server..":SUDO:ID") then
+if not database:get(id_server..":SUDO:ID") then
 io.write('\27[0;35m\n ارسل ايدي المطور الاساسي ↓ :\na┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉\n\27[0;33;49m')
 local SUDOID = io.read()
 if SUDOID ~= '' then
 io.write('\27[1;35m تم حفظ ايدي المطور الاساسي \na┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉\n27[0;39;49m')
-database:set(DaRk_server..":SUDO:ID",SUDOID)
+database:set(id_server..":SUDO:ID",SUDOID)
 else
 print('\27[0;31m┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉ ┉\n لم يتم حفظ ايدي المطور الاساسي ارسله مره اخره')
 end 
 os.execute('lua DARK.lua')
 end
-if not database:get(DaRk_server..":SUDO:USERNAME") then
+if not database:get(id_server..":SUDO:USERNAME") then
 io.write('\27[1;31m ↓ ارسل معرف المطور الاساسي :\n SEND ID FOR SIDO : \27[0;39;49m')
 local SUDOUSERNAME = io.read():gsub('@','')
 if SUDOUSERNAME ~= '' then
 io.write('\n\27[1;34m تم حفظ معرف المطور :\n\27[0;39;49m')
-database:set(DaRk_server..":SUDO:USERNAME",'@'..SUDOUSERNAME)
+database:set(id_server..":SUDO:USERNAME",'@'..SUDOUSERNAME)
 else
 print('\n\27[1;34m لم يتم حفظ معرف المطور :')
 end 
@@ -59,22 +59,22 @@ os.execute('lua DARK.lua')
 end
 local create_config_auto = function()
 config = {
-token = database:get(DaRk_server..":token"),
-SUDO = database:get(DaRk_server..":SUDO:ID"),
-UserName = database:get(DaRk_server..":SUDO:USERNAME"),
+token = database:get(id_server..":token"),
+SUDO = database:get(id_server..":SUDO:ID"),
+UserName = database:get(id_server..":SUDO:USERNAME"),
  }
 create(config, "./Info.lua")   
 end 
 create_config_auto()
-token = database:get(DaRk_server..":token")
-SUDO = database:get(DaRk_server..":SUDO:ID")
+token = database:get(id_server..":token")
+SUDO = database:get(id_server..":SUDO:ID")
 install = io.popen("whoami"):read('*a'):gsub('[\n\r]+', '') 
 print('\n\27[1;34m doneeeeeeee senddddddddddddd :')
 file = io.open("DARK", "w")  
 file:write([[
 #!/usr/bin/env bash
 cd $HOME/DARK
-token="]]..database:get(DaRk_server..":token")..[["
+token="]]..database:get(id_server..":token")..[["
 while(true) do
 rm -fr ../.telegram-cli
 if [ ! -f ./tg ]; then
@@ -127,8 +127,8 @@ if not f then
 AutoSet()  
 else   
 f:close()  
-database:del(DaRk_server..":token")
-database:del(DaRk_server..":SUDO:ID")
+database:del(id_server..":token")
+database:del(id_server..":SUDO:ID")
 end  
 local config = loadfile("./Info.lua")() 
 return config 
